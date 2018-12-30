@@ -76,6 +76,8 @@ class DataCollector:
 
 		## inicio while :
         while True:
+            t_utc = datetime.utcnow()
+            t_str = t_utc.isoformat() + 'Z'
             start_time = time.time()
             list = 0
             for parameter in inputs:
