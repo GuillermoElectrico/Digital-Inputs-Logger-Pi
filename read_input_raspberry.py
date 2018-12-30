@@ -26,10 +26,13 @@ class DataCollector:
         self.inputspins_yaml = inputspins_yaml
         self.max_iterations = None  # run indefinitely by default
         self.inputspins = None
+        self.inputspins_map_last_change = -1
         gpioinputs = self.get_inputs()
         GPIO.setwarnings(False)
 #        GPIO.setup(gpioinputs, GPIO.IN)
+        log.info('Configure GPIO:')
         for gpio in gpioinputs:
+            log.info('\t {} - PIN {}'.format( gpio, gpioinputs[gpio]))
             GPIO.setup(gpioinputs[gpio], GPIO.IN)
 
     def get_inputs(self):
@@ -38,6 +41,7 @@ class DataCollector:
             try:
                 log.info('Reloading inputs as file changed')
                 self.inputspins = yaml.load(open(self.inputspins_yaml))
+#                self.meter_map = new_map['inputs']
                 self.inputspins_map_last_change = path.getmtime(self.inputspins_yaml)
             except Exception as e:
                 log.warning('Failed to re-load inputs, going on with the old one.')
@@ -59,23 +63,30 @@ class DataCollector:
 
     def collect_and_store(self):
         inputs = self.get_inputs()
+        influxdb = self.get_influxdb()
         t_utc = datetime.utcnow()
         t_str = t_utc.isoformat() + 'Z'
 
         save = False
         datas = dict()
+        list = 0
+        for parameter in inputs:
+            list = list + 1
+            datas[parameter] = False
 
 		## inicio while :
-        while:
+        while True:
             start_time = time.time()
-
+            list = 0
             for parameter in inputs:
-                statusInput = !GPIO.input(inputs[parameter])
-                if statusInput != datas[parameter]
+                list = list + 1
+                statusInput =  not GPIO.input(inputs[parameter])
+                if statusInput != datas[parameter]:
                     datas[parameter] = statusInput
+                    log.info('{} - PIN {} - Status {}'.format( parameter, inputs[parameter], statusInput))
                     save = True
 			
-            datas['ReadTime'] =  time.time() - start_time
+#            datas['ReadTime'] =  time.time() - start_time
 
             if save:
                 save = False
@@ -86,12 +97,16 @@ class DataCollector:
                             'id': inputs_id,
                         },
                         'time': t_str,
-                        'fields': datas[inputs_id]
+                        'fields': {
+                            'status': datas[inputs_id],
+                        }
                     }
                     for inputs_id in datas
                 ]
                 if len(json_body) > 0:
                     influx_id_name = dict() # mapping host to name
+					
+#                    log.debug(json_body)
 			
                     for influx_config in influxdb:
                         influx_id_name[influx_config['host']] = influx_config['name']
@@ -111,8 +126,8 @@ class DataCollector:
                 else:
                     log.warning(t_str, 'No data sent.')
 					
-			## delay 10 ms between read inputs
-            time.sleep(0.01)
+			## delay 50 ms between read inputs
+            time.sleep(0.05)
 
 
 if __name__ == '__main__':
@@ -122,6 +137,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--inputspins', default='inputspins.yml',
                         help='YAML file containing relation inputs, name, type etc. Default "inputspins.yml"')
+    parser.add_argument('--influxdb', default='influx_config.yml',
+                        help='YAML file containing Influx Host, port, user etc. Default "influx_config.yml"')
     parser.add_argument('--log', default='CRITICAL',
                         help='Log levels, DEBUG, INFO, WARNING, ERROR or CRITICAL')
     parser.add_argument('--logfile', default='',
@@ -145,7 +162,7 @@ if __name__ == '__main__':
 
     log.info('Started app')
 
-    collector = DataCollector(influx_client=client,
+    collector = DataCollector(influx_yaml=args.influxdb,
                               inputspins_yaml=args.inputspins)
 
     collector.collect_and_store()
