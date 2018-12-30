@@ -39,7 +39,7 @@ Its been verified to work with a raspberry pi with simple 13 inputs module (comi
     ```sh
     $ influx
     CREATE DATABASE db_inputs
-    exit 
+    exit
     ```
 [*source](https://docs.influxdata.com/influxdb/v1.3/introduction/installation/)
 
@@ -56,7 +56,7 @@ Its been verified to work with a raspberry pi with simple 13 inputs module (comi
     ```
 * Now install
     ```sh
-    $ sudo apt-get update && sudo apt-get install grafana 
+    $ sudo apt-get update && sudo apt-get install grafana
     ```
 * Start the service using systemd:
     ```sh
