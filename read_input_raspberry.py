@@ -16,7 +16,8 @@ GPIO.setmode(GPIO.BOARD)
 os.chdir(sys.path[0])
 
 class DataCollector:
-    def __init__(self, influx_yaml, inputspins_yaml):
+    def __init__(self, influx_yaml, inputspins_yaml, interval_save):
+        self.interval = interval_save
         self.influx_yaml = influx_yaml
         self.influx_map = None
         self.influx_map_last_change = -1
@@ -74,11 +75,12 @@ class DataCollector:
             list = list + 1
             datas[parameter] = False
 
+        start_time = time.time()
+
 		## inicio while :
         while True:
             t_utc = datetime.utcnow()
             t_str = t_utc.isoformat() + 'Z'
-            start_time = time.time()
             list = 0
             for parameter in inputs:
                 list = list + 1
@@ -89,6 +91,10 @@ class DataCollector:
                     save = True
 			
 #            datas['ReadTime'] =  time.time() - start_time
+            if time.time() - start_time > self.interval:
+                log.info('Save with interval')
+                save = True
+                start_time = time.time()
 
             if save:
                 save = False
@@ -127,6 +133,8 @@ class DataCollector:
                             raise
                 else:
                     log.warning(t_str, 'No data sent.')
+			
+                start_time = time.time()			
 					
 			## delay 50 ms between read inputs
             time.sleep(0.05)
@@ -137,6 +145,8 @@ if __name__ == '__main__':
     import argparse
 
     parser = argparse.ArgumentParser()
+    parser.add_argument('--interval', default=60,
+                        help='Saved inputs interval (seconds), default 60')
     parser.add_argument('--inputspins', default='inputspins.yml',
                         help='YAML file containing relation inputs, name, type etc. Default "inputspins.yml"')
     parser.add_argument('--influxdb', default='influx_config.yml',
@@ -146,6 +156,7 @@ if __name__ == '__main__':
     parser.add_argument('--logfile', default='',
                         help='Specify log file, if not specified the log is streamed to console')
     args = parser.parse_args()
+    interval = int(args.interval)
     loglevel = args.log.upper()
     logfile = args.logfile
 
@@ -165,7 +176,7 @@ if __name__ == '__main__':
     log.info('Started app')
 
     collector = DataCollector(influx_yaml=args.influxdb,
-                              inputspins_yaml=args.inputspins)
+                              inputspins_yaml=args.inputspins, interval_save=interval)
 
     collector.collect_and_store()
 	
