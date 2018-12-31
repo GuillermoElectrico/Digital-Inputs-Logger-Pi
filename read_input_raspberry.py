@@ -48,7 +48,7 @@ class DataCollector:
                 log.warning('Failed to re-load inputs, going on with the old one.')
                 log.warning(e)
         return self.inputspins
-		
+
     def get_influxdb(self):
         assert path.exists(self.influx_yaml), 'InfluxDB map not found: %s' % self.influx_yaml
         if path.getmtime(self.influx_yaml) != self.influx_map_last_change:
@@ -89,7 +89,7 @@ class DataCollector:
                     datas[parameter] = statusInput
                     log.info('{} - PIN {} - Status {}'.format( parameter, inputs[parameter], statusInput))
                     save = True
-			
+
 #            datas['ReadTime'] =  time.time() - start_time
             if time.time() - start_time > self.interval:
                 log.info('Save with interval')
@@ -113,12 +113,12 @@ class DataCollector:
                 ]
                 if len(json_body) > 0:
                     influx_id_name = dict() # mapping host to name
-					
+
 #                    log.debug(json_body)
-			
+
                     for influx_config in influxdb:
                         influx_id_name[influx_config['host']] = influx_config['name']
-				
+
                         DBclient = InfluxDBClient(influx_config['host'],
                                                 influx_config['port'],
                                                 influx_config['user'],
@@ -133,9 +133,9 @@ class DataCollector:
                             raise
                 else:
                     log.warning(t_str, 'No data sent.')
-			
-                start_time = time.time()			
-					
+
+                start_time = time.time()
+
 			## delay 50 ms between read inputs
             time.sleep(0.05)
 
@@ -173,11 +173,15 @@ if __name__ == '__main__':
 
     log.addHandler(loghandle)
 
+    log.info('Sleep {} seconds for booting' .format( interval ))
+
+    time.sleep( interval )
+
     log.info('Started app')
 
     collector = DataCollector(influx_yaml=args.influxdb,
                               inputspins_yaml=args.inputspins, interval_save=interval)
 
     collector.collect_and_store()
-	
+
     GPIO.cleanup()

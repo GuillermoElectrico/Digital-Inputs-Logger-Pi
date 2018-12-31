@@ -106,6 +106,7 @@ Its been verified to work with a raspberry pi with simple 13 inputs module (comi
 * To run the python script at system startup. Add to following lines to the end of /etc/rc.local but before exit:
     ```sh
     # Start Inputs Logger
-    /home/pi/Digital-Inputs-Logger-Pi/read_input_raspberry.py --interval 10 > /var/log/inputs-logger.log &
+    /home/pi/Digital-Inputs-Logger-Pi/read_input_raspberry.py > /var/log/inputs-logger.log &
     ```
+	
     Log with potential errors are found in /var/log/inputs-logger.log
