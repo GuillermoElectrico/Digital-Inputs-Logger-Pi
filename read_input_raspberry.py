@@ -79,8 +79,6 @@ class DataCollector:
 
 		## inicio while :
         while True:
-            t_utc = datetime.utcnow()
-            t_str = t_utc.isoformat() + 'Z'
             list = 0
             for parameter in inputs:
                 list = list + 1
@@ -98,6 +96,8 @@ class DataCollector:
 
             if save:
                 save = False
+                t_utc = datetime.utcnow()
+                t_str = t_utc.isoformat() + 'Z'
                 json_body = [
                     {
                         'measurement': 'LocalInputsLog',
