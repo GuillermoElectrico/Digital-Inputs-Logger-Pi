@@ -38,7 +38,7 @@ Its been verified to work with a raspberry pi with simple 13 inputs module (comi
 * Create the database
     ```sh
     $ influx
-    CREATE DATABASE db_inputs
+    CREATE DATABASE db_meters
     exit
     ```
 [*source](https://docs.influxdata.com/influxdb/v1.3/introduction/installation/)
@@ -48,11 +48,11 @@ Its been verified to work with a raspberry pi with simple 13 inputs module (comi
 ##### Step-by-step instructions
 * Add APT Repository
     ```sh
-    $ echo "deb https://dl.bintray.com/fg2it/deb-rpi-1b jessie main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+    $ echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
     ```
 * Add Bintray key
     ```sh
-    $ curl https://bintray.com/user/downloadSubjectPublicKey?username=bintray | sudo apt-key add -
+    $ curl https://packages.grafana.com/gpg.key | sudo apt-key add -
     ```
 * Now install
     ```sh
@@ -74,6 +74,7 @@ Its been verified to work with a raspberry pi with simple 13 inputs module (comi
 #### Install Digital-Inputs-Logger-Pi:
 * Download and install from Github and install pip3
     ```sh
+	$ sudo apt-get install git
     $ git clone https://github.com/GuillermoElectrico/Digital-Inputs-Logger-Pi.git
 	$ sudo apt-get install python3-pip
     ```
