@@ -85,7 +85,7 @@ class DataCollector:
                 statusInput =  not GPIO.input(inputs[parameter])
                 if statusInput != datas[parameter]:
                     datas[parameter] = statusInput
-                    log.info('{} - PIN {} - Status {}'.format( parameter, inputs[parameter], statusInput))
+                    log.info('{} - PIN {} - Status {}'.format( parameter, inputs[parameter], int(statusInput)))
                     save = True
 
 #            datas['ReadTime'] =  time.time() - start_time
@@ -106,7 +106,7 @@ class DataCollector:
                         },
                         'time': t_str,
                         'fields': {
-                            'status': datas[inputs_id],
+                            'status': int(datas[inputs_id]),
                         }
                     }
                     for inputs_id in datas
@@ -136,8 +136,8 @@ class DataCollector:
 
                 start_time = time.time()
 
-			## delay 50 ms between read inputs
-            time.sleep(0.05)
+			## delay 200 ms between read inputs
+            time.sleep(0.2)
 
 
 if __name__ == '__main__':

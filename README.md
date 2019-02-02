@@ -111,3 +111,80 @@ Its been verified to work with a raspberry pi with simple 13 inputs module (comi
     ```
 	
     Log with potential errors are found in /var/log/inputs-logger.log
+
+#### Optional, Install and Configure RTC DS3231
+
+In the case of not having internet in the installation where you have the meter with the raspberry pi, you can install an RTC DS3231 module to be able to correctly register the date and time in the database and grafana.
+
+##### Step-by-step instructions
+* First connect the RTC module
+	Connect to the corresponding pins +3.3V, SDA1 (GPIO2), SCL1 (GPIO3) and GND of the raspberry pi (depending on the model, in google there are examples).  
+
+* Enable I2C port vía raspi-config*
+    ```sh
+    $ sudo raspi-config
+    ```
+	
+	Reboot after enabled.
+	
+	*If you use orange pi or similar, consult documentation.
+	
+*  Install i2c-tools and verify that the i2c bus and the RTC module are working (Optional)
+    ```sh
+    $ sudo apt-get install i2c-tools
+	$ sudo i2cdetect -y 1
+	    0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+	00:          -- -- -- -- -- -- -- -- -- -- -- -- --
+	10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+	20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+	30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+	40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+	50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+	60: -- -- -- -- -- -- -- -- 68 -- -- -- -- -- -- --
+	70: -- -- -- -- -- -- -- --
+    ```
+* Now check the time of the module, and if it is the case, update the date and time.
+	
+	Enable RTC module:
+	```sh
+    $ sudo echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device
+    ```
+	
+	With this the time is read from the RTC:
+	```sh
+    $ sudo hwclock -r --rtc /dev/rtc0
+    ```
+	
+	*If you get an error or can not find /dev/rtc0, check the name of the rtc with:
+	```sh
+	$ ls /dev/rtc?
+    ```
+	
+	The system time can be seen with: 
+    ```sh
+	$ date
+	jue may  5 23:02:46 CLST 2016
+	```
+	
+	To set the system time, this command is used:
+    ```sh
+	$ sudo date -s "may 5 2016 23:09:40 CLST"
+	jue may  5 23:09:40 CLST 2016
+    ```
+	
+	Now as the system clock is fine, you can set the time in the RTC as:
+	```sh
+    $ sudo hwclock -w --rtc /dev/rtc0
+    ```
+
+
+* To set the date from the rtc each time the system is started Add to following lines to the end of /etc/rc.local but before exit:
+    ```sh
+	$ sudo nano /etc/rc.local
+	```
+	
+	```sh
+    echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device
+	sleep 1
+	hwclock -s --rtc /dev/rtc0
+    ```
