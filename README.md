@@ -11,7 +11,7 @@ Its been verified to work with a raspberry pi with simple 13 inputs module (comi
 
 #### Software
 
-* Raspbian
+* Raspbian or dietpi
 * Python 3.4 and PIP3
 * [RPi.GPIO](https://pypi.org/project/RPi.GPIO/)
 * [InfluxDB](https://docs.influxdata.com/influxdb/v1.3/)
