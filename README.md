@@ -38,7 +38,7 @@ Its been verified to work with a raspberry pi with simple 13 inputs module (comi
 * Create the database
     ```sh
     $ influx
-    CREATE DATABASE db_meters
+    CREATE DATABASE db_inputs
     exit
     ```
 [*source](https://docs.influxdata.com/influxdb/v1.7/introduction/installation/)
