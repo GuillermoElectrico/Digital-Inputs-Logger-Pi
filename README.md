@@ -25,7 +25,7 @@ Its been verified to work with a raspberry pi with simple 13 inputs module (comi
     ```sh
     $ curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
     $ source /etc/os-release
-    $ test $VERSION_ID = "9" && echo "deb https://repos.influxdata.com/debian stretch stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+    $ test $VERSION_ID = "10" && echo "deb https://repos.influxdata.com/debian buster stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
     ```
 * Download and install
     ```sh
@@ -41,7 +41,7 @@ Its been verified to work with a raspberry pi with simple 13 inputs module (comi
     CREATE DATABASE db_meters
     exit
     ```
-[*source](https://docs.influxdata.com/influxdb/v1.3/introduction/installation/)
+[*source](https://docs.influxdata.com/influxdb/v1.7/introduction/installation/)
 
 #### Install Grafana*
 
@@ -147,7 +147,9 @@ In the case of not having internet in the installation where you have the meter 
 	
 	Enable RTC module:
 	```sh
-    $ sudo echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device
+    $ sudo bash
+	$ echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device
+	$ exit
     ```
 	
 	With this the time is read from the RTC:
