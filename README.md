@@ -87,7 +87,7 @@ Its been verified to work with a raspberry pi with simple 13 inputs module (comi
     ```sh
     $ chmod 777 read_input_raspberry.py
     ```
-* Edit inputs.yml to match your configuration
+* Edit inputs.yml to match your configuration and influx_config.yml
 * Test the configuration by running:
     ```sh
     ./read_input_raspberry.py
