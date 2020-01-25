@@ -1,13 +1,13 @@
 # Digital-Inputs-Logger-Pi
 Log inputs status on a Raspberry Pi and plot graphs of your data.
-Its been verified to work with a raspberry pi with simple 13 inputs module (coming soon PCB). By changing the inputspins.yml file and making a corresponding GPIO inputs relation.
+Its been verified to work with a raspberry pi with simple 13 inputs module (Included in PCB folder). By changing the inputspins.yml file and making a corresponding GPIO inputs relation.
 
 ### Requirements
 
 #### Hardware
 
 * Raspberry Pi B+
-* 13 inputs module (coming soon PCB) or other module DIY
+* 13 inputs module (Included in PCB folder) or other module DIY
 
 #### Software
 
