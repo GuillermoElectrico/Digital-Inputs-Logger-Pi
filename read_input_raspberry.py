@@ -137,7 +137,7 @@ class DataCollector:
                 start_time = time.time()
 
 			## delay 1s between read inputs
-            time.sleep(1000)
+            time.sleep(1)
 
 
 if __name__ == '__main__':
