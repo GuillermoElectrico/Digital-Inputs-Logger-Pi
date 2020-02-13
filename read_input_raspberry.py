@@ -82,11 +82,16 @@ class DataCollector:
             list = 0
             for parameter in inputs:
                 list = list + 1
-                statusInput =  not GPIO.input(inputs[parameter])
-                if statusInput != datas[parameter]:
-                    datas[parameter] = statusInput
-                    log.info('{} - PIN {} - Status {}'.format( parameter, inputs[parameter], int(statusInput)))
-                    save = True
+                try:
+                    statusInput =  not GPIO.input(inputs[parameter])
+                    if statusInput != datas[parameter]:
+                        datas[parameter] = statusInput
+                        log.info('{} - PIN {} - Status {}'.format( parameter, inputs[parameter], int(statusInput)))
+                        save = True
+                except Exception as e:
+                    log.error('Error to read input!')
+                    log.error(e)
+                    raise
 
 #            datas['ReadTime'] =  time.time() - start_time
             if time.time() - start_time > self.interval:
