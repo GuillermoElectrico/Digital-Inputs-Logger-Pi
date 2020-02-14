@@ -92,6 +92,7 @@ class DataCollector:
                     log.error('Error to read input!')
                     log.error(e)
                     raise
+                time.sleep(0.01)
 
 #            datas['ReadTime'] =  time.time() - start_time
             if time.time() - start_time > self.interval:
